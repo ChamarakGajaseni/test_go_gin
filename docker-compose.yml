@@ -1,0 +1,37 @@
+version: '3.9'
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - task-service
+      - user-service
+
+  task-service:
+    build: ./services/task
+    ports:
+      - "8001:8001"
+    environment:
+      - DB_HOST=postgres
+    depends_on:
+      - postgres
+
+  user-service:
+    build: ./services/user
+    ports:
+      - "8002:8002"
+    environment:
+      - DB_HOST=postgres
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: youruser
+      POSTGRES_PASSWORD: yourpass
+      POSTGRES_DB: kanban
+    ports:
+      - "5432:5432"
